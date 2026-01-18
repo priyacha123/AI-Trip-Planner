@@ -48,8 +48,8 @@ const Header = () => {
   return (
     <div className="p-3 shadow-sm flex justify-between items-center px-5">
       <div className="flex justify-center items-center font-bold text-2xl">
-        <img src={logo} alt="AI-Trip-Planner" width={120} height={100} />
-        <span>AI-Trip-Planner</span>
+        <img src={logo} alt="Voyage Tour" width={120} height={100} />
+        <span>Voyage Tour</span>
       </div>
       <div>
         {user ? (
