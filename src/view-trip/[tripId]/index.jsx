@@ -10,25 +10,41 @@ import Footer from "../components/Footer";
 
 const Viewtrip = () => {
   const { tripId } = useParams();
-  const [trip, setTrip] = useState([])
+  const [trip, setTrip] = useState(null)
+  const [loading, setLoading] = useState(true);
 
-  const GetTripData = async () => {
+
+const GetTripData = async () => {
+  try {
     const docRef = doc(db, "AITrips", tripId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      console.log("Document: ", docSnap.data());
-      setTrip(docSnap.data())
+      setTrip(docSnap.data());
     } else {
-      console.log("No such Document");
       toast.message("No Trip Found.");
     }
-  };
+  } catch (error) {
+    toast.error("Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
 //   used to get trip info from firebase
   useEffect(() => {
     tripId && GetTripData();
   }, [tripId])
+
+  if (loading) {
+  return (
+    <div className="p-10 text-center text-gray-400">
+      Loading trip details...
+    </div>
+  );
+}
+
 
   return (
     <div className="p-10 md:px-20 lg:px-44 xl:px-56">
