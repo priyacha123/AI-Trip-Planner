@@ -24,32 +24,26 @@ const HotelCardItem = ({ hotel, index }) => {
         }
         target="_blank"
       >
-        <div className="p-3 mt-2 rounded-xl gap-5 hover:shadow-md border hover:scale-105 transition-all cursor-pointer">
+        <div className="p-3 mt-2 bg-gray-200 text-black rounded-xl gap-5 hover:shadow-md border hover:scale-105 transition-all cursor-pointer">
                    <DirectionAwareHover imageUrl={photoUrl ? photoUrl : "/hotel.webp"} />
-          {/* <img
-            src={photoUrl ? photoUrl : "/hotel.webp"}
-            alt="hotels"
-            className="object-cover rounded-xl h-75 w-full"
-          /> */}
-
+                   
           <div className="my-2 flex flex-col gap-2">
             <h2 className="font-medium"> {hotel.hotelName} </h2>
-            <h2 className="text-sm pb-2 text-gray-400 line-clamp-3">
-              {" "}
+            <h2 className="text-sm text-gray-600 line-clamp-3">
               {hotel.hotelDescription}{" "}
             </h2>
-            <h2 className="text-sm text-gray-400">
+            <h2 className="text-sm text-gray-600">
               {" "}
               💰 Price range: {hotel.priceRange}{" "}
             </h2>
-            <h2 className="text-sm text-gray-400">
+            <h2 className="text-sm text-gray-600">
               {" "}
               🌟 Rating: {hotel.rating}{" "}
             </h2>
             <Button className="mt-3 p-7 mb-1" size="sm">
-              <FaMapLocationDot />
-              <p className="text-sm text-gray-400 text-wrap">
-                📍 Address: {hotel.hotelAddress}{" "}
+              <FaMapLocationDot className="text-blue-400" />
+                          <p className="text-sm text-cyan-100 text-wrap">
+                Address: {hotel.hotelAddress}{" "}
               </p>
             </Button>
           </div>

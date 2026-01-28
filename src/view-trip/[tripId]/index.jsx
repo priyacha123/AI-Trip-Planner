@@ -47,7 +47,7 @@ const GetTripData = async () => {
 
 
   return (
-    <div className="p-10 md:px-20 lg:px-44 xl:px-56">
+    <div className="p-10 bg-neutral-300 text-black md:px-20 lg:px-44 xl:px-56">
         <h1 className="font-bold text-5xl mb-5">{trip?.tripData?.tripData?.trip_title} </h1>
         {/* info section */}
         <InfoSection trip={trip} />

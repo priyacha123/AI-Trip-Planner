@@ -18,14 +18,15 @@ import { doc, setDoc } from "firebase/firestore";
 import { db } from "../service/firebaseConfi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import SignInDialog from "../components/custom/sign-in-dialog";
 
 const CreateTrip = () => {
   const [place, setPlace] = useState();
   const [formData, setFormData] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // json trip data
 
@@ -438,11 +439,11 @@ const CreateTrip = () => {
       return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     const FINAL_PROMPT = AI_PROMPT.replace(
       "{location}",
-      formData?.location?.label
+      formData?.location?.label,
     )
       .replace("{total_days}", formData?.total_days)
       .replace("{traveller}", formData?.traveller)
@@ -457,10 +458,11 @@ const CreateTrip = () => {
       });
 
       console.log("FULL RESPONSE:", result);
-      setLoading(false)
-      SaveAITrip(result)
-      console.log("==============================================================================");
-      
+      setLoading(false);
+      SaveAITrip(result);
+      console.log(
+        "==============================================================================",
+      );
 
       // If Gemini returns JSON
       // const parsed = JSON.parse(result);
@@ -473,40 +475,38 @@ const CreateTrip = () => {
   };
 
   const extractJSON = (text) => {
-  // Remove ```json and ``` fences
-  return text
-    .replace(/```json/g, "")
-    .replace(/```/g, "")
-    .trim();
-};
+    // Remove ```json and ``` fences
+    return text
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+  };
 
+  const SaveAITrip = async (TripData) => {
+    try {
+      setLoading(true);
 
-const SaveAITrip = async (TripData) => {
-  try {
-    setLoading(true);
+      const user = JSON.parse(localStorage.getItem("user"));
+      const docId = Date.now().toString();
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    const docId = Date.now().toString();
+      const cleanJSON = extractJSON(TripData);
+      const parsedTrip = JSON.parse(cleanJSON);
 
-    const cleanJSON = extractJSON(TripData);
-    const parsedTrip = JSON.parse(cleanJSON);
+      await setDoc(doc(db, "AITrips", docId), {
+        userSelection: formData,
+        tripData: parsedTrip,
+        userEmail: user?.email,
+        id: docId,
+      });
 
-    await setDoc(doc(db, "AITrips", docId), {
-      userSelection: formData,
-      tripData: parsedTrip,
-      userEmail: user?.email,
-      id: docId,
-    });
-
-    setLoading(false);
-    navigate("/view-trip/" + docId);
-  } catch (error) {
-    console.error("JSON Parse Error:", error);
-    toast.error("AI response format error");
-    setLoading(false);
-  }
-};
-
+      setLoading(false);
+      navigate("/view-trip/" + docId);
+    } catch (error) {
+      console.error("JSON Parse Error:", error);
+      toast.error("AI response format error");
+      setLoading(false);
+    }
+  };
 
   const GetUserProfile = (tokenInfo) => {
     axios
@@ -517,7 +517,7 @@ const SaveAITrip = async (TripData) => {
             Authorization: `Bearer ${tokenInfo?.access_token}`,
             Accept: "application/json",
           },
-        }
+        },
       )
       .then((resp) => {
         console.log(resp);
@@ -528,119 +528,108 @@ const SaveAITrip = async (TripData) => {
   };
 
   return (
-    <div className="sm:px-10 md:px-32 lg:px-56 xl:px-72 px-5 mt-10 mb-10">
-      <h2 className="font-bold text-3xl">Tell us your travel preferences</h2>
-      <p className="mt-3 text-gray-500 text-xl">
-        Just provide some basic information and our trip planner will generate a
-        customized itinerary based on your preferences.
-      </p>
+    <>
+      <div className="sm:px-10 md:px-32 lg:px-56 xl:px-72 px-5 mt-10 mb-10">
+        <h2 className="font-bold text-3xl">Tell us your travel preferences</h2>
+        <p className="mt-3 text-gray-500 text-xl">
+          Just provide some basic information and our trip planner will generate
+          a customized itinerary based on your preferences.
+        </p>
 
-      <div className="mt-15 flex flex-col gap-10">
-        <div>
-          <h2 className="text-xl my-3 font-medium">
-            What is your destination choice?
-          </h2>
-          {/* <GooglePlacesAutocomplete
+        <div className="mt-15 flex flex-col gap-10">
+          <div>
+            <h2 className="text-xl my-3 font-medium">
+              What is your destination choice?
+            </h2>
+            {/* <GooglePlacesAutocomplete
                  apiKey={import.meta.env.VITE_GOOGLE_PLACE_API_KEY}
                 /> */}
-          <LocationAutocomplete
-            selectProps={{
-              place,
-              onChange: (v) => {
-                setPlace(v);
-                console.log("v", v);
-                handleInputChange("location", v);
-              },
-            }}
-            // selectProps={handleLocationSelect}
-          />
-        </div>
+            <LocationAutocomplete
+              selectProps={{
+                place,
+                onChange: (v) => {
+                  setPlace(v);
+                  console.log("v", v);
+                  handleInputChange("location", v);
+                },
+              }}
+              // selectProps={handleLocationSelect}
+            />
+          </div>
 
-        <div>
-          <h2 className="text-xl my-3 font-medium">
-            How many days are you planning for your trip?
-          </h2>
-          <Input
-            onChange={(e) => handleInputChange("total_days", e.target.value)}
-            placeholder={"Ex. 3"}
-            type="number"
-          />
-        </div>
+          <div>
+            <h2 className="text-xl my-3 font-medium">
+              How many days are you planning for your trip?
+            </h2>
+            <Input
+              onChange={(e) => handleInputChange("total_days", e.target.value)}
+              placeholder={"Ex. 3"}
+              type="number"
+            />
+          </div>
 
-        <div>
-          <h2 className="text-xl my-3 font-medium">What is your budget?</h2>
-          <div className="grid grid-cols-3 gap-5 mt-5">
-            {SelectBudgetOptions.map((item, index) => (
-              <div
-                key={index}
-                onClick={() => handleInputChange("budget", item.title)}
-                className={`p-4 border rounded-lg cursor-pointer
+          <div>
+            <h2 className="text-xl my-3 font-medium">What is your budget?</h2>
+            <div className="grid grid-cols-3 gap-5 mt-5">
+              {SelectBudgetOptions.map((item, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleInputChange("budget", item.title)}
+                  className={`p-4 border rounded-lg cursor-pointer
                     ${
                       formData?.budget == item.title &&
                       "shadow-2xl border-fuchsia-600"
                     }`}
-              >
-                <h2 className="text-4xl ">{item.icon} </h2>
-                <h2 className="font-bold text-lg">{item.title} </h2>
-                <h2 className="text-sm text-gray-500">{item.description} </h2>
-              </div>
-            ))}
+                >
+                  <h2 className="text-4xl ">{item.icon} </h2>
+                  <h2 className="font-bold text-lg">{item.title} </h2>
+                  <h2 className="text-sm text-gray-500">{item.description} </h2>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div>
-          <h2 className="text-xl my-3 font-medium">
-            Who do you plan on travelling with on your next adventure?
-          </h2>
-          <div className="grid grid-cols-3 gap-5 mt-5">
-            {SelectTravelsList.map((item, index) => (
-              <div
-                onClick={() => handleInputChange("traveller", item.people)}
-                key={index}
-                className={`p-4 border rounded-lg cursor-pointer
+          <div>
+            <h2 className="text-xl my-3 font-medium">
+              Who do you plan on travelling with on your next adventure?
+            </h2>
+            <div className="grid grid-cols-3 gap-5 mt-5">
+              {SelectTravelsList.map((item, index) => (
+                <div
+                  onClick={() => handleInputChange("traveller", item.people)}
+                  key={index}
+                  className={`p-4 border rounded-lg cursor-pointer
                     ${
                       formData?.traveller == item.people &&
                       "shadow-2xl border-fuchsia-600"
                     }`}
-              >
-                <h2 className="text-4xl">{item.icon} </h2>
-                <h2 className="font-bold text-lg">{item.title} </h2>
-                <h2 className="text-sm text-gray-500">{item.description} </h2>
-              </div>
-            ))}
+                >
+                  <h2 className="text-4xl">{item.icon} </h2>
+                  <h2 className="font-bold text-lg">{item.title} </h2>
+                  <h2 className="text-sm text-gray-500">{item.description} </h2>
+                </div>
+              ))}
+            </div>
           </div>
+        </div>
+
+        <div className="my-10 flex justify-end ">
+          <Button disabled={loading} onClick={OnGenerateTrip}>
+            {loading ? (
+              <AiOutlineLoading3Quarters className="animate-spin" />
+            ) : (
+              "Generate Trip"
+            )}
+          </Button>
         </div>
       </div>
 
-      <div className="my-10 flex justify-end ">
-        <Button
-        disabled={loading}
-         onClick={OnGenerateTrip}>
-         {loading ? <AiOutlineLoading3Quarters className="animate-spin"/>
-          : 'Generate Trip' }
-         </Button>
-      </div>
-
-      <Dialog open={openDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogDescription>
-              <img src="/logo.png" />
-              <h2 className="font-bold text-lg mt-5">Sign in with Google</h2>
-              <p>Sign in to the App with Google authentication securely</p>
-
-              <Button
-                onClick={login}
-                className="w-full mt-5 flex gap-4 items-center"
-                >
-                  <FcGoogle className="w-7 h-7" />
-                  Sign in with Google
-              </Button>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-    </div>
+      <SignInDialog
+        login={login}
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+      />
+    </>
   );
 };
 
