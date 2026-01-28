@@ -1,11 +1,15 @@
+import { Outlet } from 'react-router-dom'
 import './App.css'
-import Hero from './components/custom/Hero'
+import Header from './components/custom/Header'
 
 function App() {
 
   return (
     <>
-    <Hero />
+    <Header />
+    {/* <Toaster /> */}
+    {/* <Hero /> */}
+    <Outlet />
     </>
   )
 }

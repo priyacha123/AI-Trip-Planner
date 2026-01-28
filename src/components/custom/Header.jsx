@@ -12,6 +12,7 @@ import {
 } from "../ui/dialog";
 import axios from "axios";
 import { FcGoogle } from "react-icons/fc";
+import { Link } from 'react-router-dom'
 // import { useNavigate } from "react-router-dom";
 
 const Header = () => {
@@ -49,19 +50,21 @@ const Header = () => {
 
   return (
     <div className="p-3 mb-10 shadow-sm flex justify-between items-center px-5">
+      <Link to="/">
       <div className="flex justify-center items-center font-bold text-2xl">
         <img src={logo} alt="Voyage Tour" width={120} height={100} />
         <span>Voyage Tour</span>
       </div>
+      </Link>
       <div>
         {user ? (
           <div className="flex items-center gap-3">
-            <a href="/create-trip">
+            <Link to="/create-trip">
               <Button className="rounded-full border">Create Trips</Button>
-            </a>
-            <a href="/my-trips">
+            </Link>
+            <Link to="/my-trips">
               <Button className="rounded-full border">My Trips</Button>
-            </a>
+            </Link>
             <Popover>
               <PopoverTrigger>
                 <img
