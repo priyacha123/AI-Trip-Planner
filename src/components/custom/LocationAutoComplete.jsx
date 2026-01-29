@@ -1,16 +1,10 @@
-import useLocationSearch from "../../hooks/useLocationSearch"
+import useLocationSearch from "../../hooks/useLocationSearch";
 
 const LocationAutocomplete = ({ selectProps }) => {
-  const {
-    query,
-    results,
-    loading,
-    search,
-    setQuery,
-    setResults,
-  } = useLocationSearch()
+  const { query, results, loading, search, setQuery, setResults } =
+    useLocationSearch();
 
-console.log("results", results);
+  console.log("results", results);
 
   return (
     <div className="relative">
@@ -18,13 +12,12 @@ console.log("results", results);
         value={query}
         onChange={(e) => search(e.target.value)}
         placeholder="Enter destination"
-        className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+        className="w-full p-2 pl-5 text-black border-2 rounded-xl border-[#d6c2ae] dark:border-[#7a846f]
+                  dark:bg-[#3a4039] dark:text-[#f5e6d8]"
       />
 
       {loading && (
-        <div className="absolute bg-white w-full p-2 text-sm">
-          Searching...
-        </div>
+        <div className="absolute bg-white w-full p-2 text-sm">Searching...</div>
       )}
 
       {results.length > 0 && (
@@ -38,11 +31,11 @@ console.log("results", results);
                   label: place.display_name,
                   lat: place.lat,
                   lon: place.lon,
-                  id: place.place_id
+                  id: place.place_id,
                 };
-                setQuery(place.display_name)
-                setResults([])
-                selectProps?.onChange?.(selectedPlace)
+                setQuery(place.display_name);
+                setResults([]);
+                selectProps?.onChange?.(selectedPlace);
               }}
             >
               {place.display_name}
@@ -51,7 +44,7 @@ console.log("results", results);
         </ul>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default LocationAutocomplete
+export default LocationAutocomplete;

@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { googleLogout } from "@react-oauth/google";
 import { Link } from "react-router-dom";
 import SignInDialog from "./sign-in-dialog";
+import { ModeToggle } from "../ui/mode-toggle";
 
 const Header = () => {
       const [openDialog, setOpenDialog] = useState(false);
@@ -52,6 +53,8 @@ const Header = () => {
                     <span className="md:hidden">🌍</span>
                   </Button>
                 </Link>
+
+                <ModeToggle />
 
                 <Popover>
                   <PopoverTrigger>

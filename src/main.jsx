@@ -9,6 +9,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import Viewtrip from './view-trip/[tripId]/index.jsx'
 import MyTrips from './my-trips/index.jsx'
 import Hero from './components/custom/Hero.jsx'
+import { ThemeProvider } from './components/ui/theme-provider.js'
 
 const router = createBrowserRouter([
  {
@@ -25,9 +26,14 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+     {/* <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme"> */}
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}>
     <Toaster />
     <RouterProvider router={router} />
     </GoogleOAuthProvider>
+     {/* </ThemeProvider> */}
   </StrictMode>,
 )
+
+
+
