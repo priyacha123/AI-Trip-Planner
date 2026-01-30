@@ -54,7 +54,7 @@ const Header = () => {
                   </Button>
                 </Link>
 
-                <ModeToggle />
+                {/* <ModeToggle /> */}
 
                 <Popover>
                   <PopoverTrigger>

@@ -116,7 +116,6 @@ const CreateTrip = () => {
             className="
             bg-white/80
             dark:bg-[#a1a081b2]/80
-            backdrop-blur-xl
             rounded-3xl
             border border-[#e4d5c5]
             dark:border-[#0c362eb2]
@@ -155,7 +154,7 @@ const CreateTrip = () => {
                 <Input
                   type="number"
                   placeholder="Eg. 2"
-                  className="w-full p-5 rounded-xl border-2 border-[#d6c2ae] dark:border-[#7a846f]
+                  className="w-full p-5 rounded-xl text-black border-2 border-[#d6c2ae] dark:border-[#7a846f]
                   dark:bg-[#3a4039] dark:text-[#f5e6d8]"
                   onChange={(e) =>
                     handleInputChange("total_days", e.target.value)
@@ -230,7 +229,7 @@ const CreateTrip = () => {
               </div>
             </div>
 
-            <div className="mt-14 flex justify-end">
+            <div className="mt-14 flex justify-center md:justify-end">
               <Button
                 disabled={loading}
                 onClick={OnGenerateTrip}

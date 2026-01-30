@@ -15,29 +15,12 @@ const InfoSection = ({ trip }) => {
       .then(setPhotoUrl);
   }, [trip])
 
-  // const GetPlacePhoto = async() => {
-  //   const data = {
-  //     textQuery:trip?.userSelection?.location?.label
-  //   }
-  //   const result = await GetPlaceDetails(data).then(resp => {
-  //     console.log("photos resp.data",resp.data.places[0].photos[3].name);
-
-  //     const PhotoUrl = PHOTO_REF_URL.replace('{NAME}',resp.data.places[0].places[3].name)
-
-  //     console.log("PhotoUrl",PhotoUrl);
-  //     setPhotoUrl(PhotoUrl);
-      
-      
-  //   })
-  // }
-
   return (
 
 
     <div>
       <DirectionAwareHover className='h-100' imageUrl={photoUrl ? photoUrl : "/hotel.webp"} />
-         {/* <img src={photoUrl?photoUrl: "/home-trip.webp"} alt="" className='h-[340px] w-full object-cover rounded' /> */}
-        <h1 className="mt-5 text-sm text-gray-300">{trip?.tripData?.tripData?.trip_summary} </h1>
+        <h1 className="mt-5 text-sm text-gray-600">{trip?.tripData?.tripData?.trip_summary} </h1>
 
         <div className='flex justify-between items-center'>
              <div className='my-5 flex flex-col gap-2'>
