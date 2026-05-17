@@ -1,10 +1,10 @@
 import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GOOGLE_GEMINI_AI_API_KEY,
+  apiKey: import.meta.env.VITE_GROQ_API_KEY,
 });
 
-export const AI_PROMPT =`
+export const AI_PROMPT = `
 You are a JSON-only response generator.
 
 Generate a travel plan using the EXACT JSON structure and field names described below.
@@ -37,6 +37,7 @@ REQUIRED JSON FORMAT:
     "budget": "STRING",
     "duration": "STRING",
     "travelers": "STRING",
+
     "hotels_options": [
       {
         "hotelName": "STRING",
@@ -51,6 +52,7 @@ REQUIRED JSON FORMAT:
         }
       }
     ],
+
     "itinerary": [
       {
         "day": NUMBER,
@@ -95,40 +97,81 @@ REQUIRED JSON FORMAT:
 Return ONLY the JSON.
 `;
 
+// export async function generateTripStream(prompt, onChunk) {
+//   const tools = [{ googleSearch: {} }];
 
+//   const config = {
+//     thinkingConfig: {
+//       thinkingBudget: -1,
+//     },
+//     tools,
+//     responseMimeType: "application/json",
+//   };
+
+//   const contents = [
+//     {
+//       role: "user",
+//       parts: [{ text: prompt }],
+//     },
+//   ];
+
+//   const response = await ai.models.generateContentStream({
+//     model: "gemini-2.5-pro",
+//     config,
+//     contents,
+//   });
+
+//   let fullText = "";
+
+//   for await (const chunk of response) {
+//     if (chunk.text) {
+//       fullText += chunk.text;
+//       onChunk?.(chunk.text); // stream text to UI
+//     }
+//   }
+
+//   return fullText;
+// }
+ 
 export async function generateTripStream(prompt, onChunk) {
-  const tools = [{ googleSearch: {} }];
+  try {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },  // forces JSON output
+        stream: true,
+      }),
+    });
 
-  const config = {
-    thinkingConfig: {
-      thinkingBudget: -1,
-    },
-    tools,
-  };
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = "";
 
-  const contents = [
-    {
-      role: "user",
-      parts: [{ text: prompt }],
-    },
-  ];
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
 
-  const response = await ai.models.generateContentStream({
-    model: "gemini-robotics-er-1.5-preview",
-    config,
-    contents,
-  });
-
-  let fullText = "";
-
-  for await (const chunk of response) {
-    if (chunk.text) {
-      fullText += chunk.text;
-      onChunk?.(chunk.text); // stream text to UI
+      const lines = decoder.decode(value).split("\n").filter(l => l.startsWith("data:"));
+      for (const line of lines) {
+        const json = line.replace("data: ", "").trim();
+        if (json === "[DONE]") continue;
+        const chunk = JSON.parse(json)?.choices?.[0]?.delta?.content || "";
+        if (chunk) {
+          fullText += chunk;
+          onChunk?.(chunk);
+        }
+      }
     }
+
+    return fullText;
+  } catch (error) {
+    if (error?.status === 429) throw new Error("Rate limit exceeded. Wait a few seconds.");
+    throw new Error("Failed to generate trip plan.");
   }
-
-  return fullText;
 }
-
-
