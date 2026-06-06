@@ -12,7 +12,7 @@ import Hero from './components/custom/Hero.jsx'
 import { ThemeProvider } from './components/ui/theme-provider.js'
 
 const router = createBrowserRouter([
- {
+  {
     path: "/",
     element: <App />,
     children: [
@@ -26,12 +26,12 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-     {/* <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme"> */}
+    {/* <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme"> */}
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}>
-    <Toaster />
-    <RouterProvider router={router} />
+      <Toaster />
+      <RouterProvider router={router} />
     </GoogleOAuthProvider>
-     {/* </ThemeProvider> */}
+    {/* </ThemeProvider> */}
   </StrictMode>,
 )
 
