@@ -11,20 +11,20 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="max-w-4xl mx-auto px-10 pb-16">
-      <div className="border border-stone-200 rounded-xl bg-stone-100 p-10 md:p-12">
+    <section id="contact" className="max-w-4xl mx-auto px-6 md:px-10 pb-16">
+      <div className="border rounded-xl bg-muted p-10 md:p-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           {/* Left */}
           <div>
-            <p className="text-[11px] font-medium text-stone-400 tracking-[0.08em] uppercase mb-3">
+            <p className="text-[11px] font-medium text-muted-foreground tracking-[0.08em] uppercase mb-3">
               Get started
             </p>
-            <h2 className="font-serif text-[28px] font-normal text-stone-900 leading-[1.25] mb-2">
+            <h2 className="font-serif text-[28px] font-normal text-foreground leading-[1.25] mb-2">
               Start your first trip
               <br />
-              <i className="text-stone-400">for free.</i>
+              <i className="text-muted-foreground">for free.</i>
             </h2>
-            <p className="text-[13.5px] font-light text-stone-500">
+            <p className="text-[13.5px] font-light text-muted-foreground">
               No credit card. 5 trips per month on the free plan.
             </p>
           </div>
@@ -32,11 +32,11 @@ export default function Contact() {
           {/* Right — form */}
           <div>
             {submitted ? (
-              <div className="flex items-center gap-2.5 text-[14px] text-stone-700">
-                <span className="w-6 h-6 flex items-center justify-center rounded-full bg-emerald-100 border border-emerald-200">
+              <div className="flex items-center gap-2.5 text-[14px] text-foreground">
+                <span className="w-6 h-6 flex items-center justify-center rounded-full bg-primary/10 border border-primary/30">
                   <svg
                     viewBox="0 0 24 24"
-                    className="w-3.5 h-3.5 stroke-emerald-700 fill-none"
+                    className="w-3.5 h-3.5 stroke-primary fill-none"
                     strokeWidth={2.2}
                   >
                     <polyline points="20 6 9 17 4 12" />
@@ -55,11 +55,11 @@ export default function Contact() {
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 px-4 py-[10px] text-sm text-stone-900 bg-stone-50 border border-stone-200 rounded-lg outline-none placeholder-stone-400 focus:border-stone-400 transition-colors duration-150 font-sans"
+                  className="flex-1 px-4 py-[10px] text-sm text-foreground bg-background border rounded-lg outline-none placeholder-muted-foreground focus:border-primary transition-colors duration-150 font-sans"
                 />
                 <button
                   type="submit"
-                  className="text-sm font-medium text-stone-50 bg-stone-900 px-5 py-[10px] rounded-lg hover:bg-stone-800 transition-colors duration-150 whitespace-nowrap cursor-pointer border-none"
+                  className="text-sm font-medium text-primary-foreground bg-primary px-5 py-[10px] rounded-full hover:bg-primary/90 transition-colors duration-150 whitespace-nowrap cursor-pointer border-none"
                 >
                   Get started
                 </button>
@@ -68,18 +68,18 @@ export default function Contact() {
 
             {/* Trust line */}
             {!submitted && (
-              <p className="text-[12px] text-stone-400 mt-2.5">
+              <p className="text-[12px] text-muted-foreground mt-2.5">
                 By signing up you agree to our{" "}
                 <a
                   href="#"
-                  className="underline hover:text-stone-600 transition-colors"
+                  className="underline hover:text-foreground transition-colors"
                 >
                   terms
                 </a>{" "}
                 and{" "}
                 <a
                   href="#"
-                  className="underline hover:text-stone-600 transition-colors"
+                  className="underline hover:text-foreground transition-colors"
                 >
                   privacy policy
                 </a>

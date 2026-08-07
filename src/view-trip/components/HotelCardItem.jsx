@@ -5,6 +5,7 @@ import { Button } from "../../components/ui/button";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { DirectionAwareHover } from "../../components/ui/direction-aware-hover";
 import { IoIosSend } from "react-icons/io";
+import { Wallet, Star } from "lucide-react";
 
 const HotelCardItem = ({ hotel, index }) => {
   const [photoUrl, setPhotoUrl] = useState();
@@ -15,21 +16,23 @@ const HotelCardItem = ({ hotel, index }) => {
 
   return (
     <div>
-        <div className="p-3 mt-2 bg-gray-200 text-black rounded-xl gap-5 hover:shadow-md border hover:scale-105 transition-all">
+        <div className="p-3 mt-2 bg-card/60 backdrop-blur-xl text-foreground rounded-2xl gap-5 hover:shadow-md border hover:border-primary/40 transition-all">
                    <DirectionAwareHover imageUrl={photoUrl ? photoUrl : "/hotel.webp"} />
-                   
+
           <div className="my-2 flex flex-col gap-2">
-            <h2 className="font-medium"> {hotel.hotelName} </h2>
-            <h2 className="text-sm text-gray-600 line-clamp-3">
+            <h2 className="font-semibold text-lg text-foreground"> {hotel.hotelName} </h2>
+            <h2 className="text-sm text-muted-foreground line-clamp-3">
               {hotel.hotelDescription}{" "}
             </h2>
-            <h2 className="text-sm text-gray-600">
+            <h2 className="text-sm text-muted-foreground flex items-center gap-1.5">
               {" "}
-              💰 Price range: {hotel.priceRange}{" "}
+              <Wallet className="h-3.5 w-3.5 text-primary shrink-0" />
+              Price range: {hotel.priceRange}{" "}
             </h2>
-            <h2 className="text-sm text-gray-600">
+            <h2 className="text-sm text-muted-foreground flex items-center gap-1.5">
               {" "}
-              🌟 Rating: {hotel.rating}{" "}
+              <Star className="h-3.5 w-3.5 text-primary shrink-0" />
+              Rating: {hotel.rating}{" "}
             </h2>
                   <Link
         id={index}
@@ -41,17 +44,15 @@ const HotelCardItem = ({ hotel, index }) => {
         }
         target="_blank"
       >
-                     <Button className="mt-2 p-5 cursor-pointer" size="sm">
+                     <Button className="mt-2 p-5 cursor-pointer rounded-full" size="sm">
                         <IoIosSend />
                         View on Map
                      </Button>
       </Link>
-            <Button className="mt-2 p-7 mb-1" size="sm">
-              <FaMapLocationDot className="text-blue-400" />
-                          <p className="text-sm text-cyan-100 text-wrap">
-                Address: {hotel.hotelAddress}{" "}
-              </p>
-            </Button>
+            <p className="text-sm text-muted-foreground mt-1 flex items-start gap-1.5">
+              <FaMapLocationDot className="text-primary mt-0.5 shrink-0" />
+              <span className="text-wrap">{hotel.hotelAddress}</span>
+            </p>
           </div>
         </div>
     </div>

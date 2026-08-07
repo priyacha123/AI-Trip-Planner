@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { FcGoogle } from "react-icons/fc";
+import { Lock } from "lucide-react";
 import axios from "axios";
 
 
@@ -38,29 +39,31 @@ const SignInDialog= ( { openDialog, setOpenDialog } ) => {
 
   return (
               <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="sm:max-w-md rounded-2xl p-6 bg-linear-to-br from-indigo-50 via-purple-50 to-pink-50 shadow-xl">
+        <DialogContent className="sm:max-w-md rounded-2xl p-6 bg-card shadow-xl">
           <DialogHeader className="space-y-3 text-center">
-            <DialogTitle className="text-xl font-bold bg-linear-to-r from-indigo-300 via-purple-700 to-pink-600 bg-clip-text text-transparent">
-              Sign in with Google
+            <DialogTitle className="text-xl font-bold text-foreground">
+              Welcome to{" "}
+              <span className="text-primary">Voyara</span>
             </DialogTitle>
 
-            <DialogDescription className="text-sm text-gray-700">
+            <DialogDescription className="text-sm text-muted-foreground">
               Securely sign in to access your account and continue using the app.
             </DialogDescription>
           </DialogHeader>
 
           <Button
             onClick={login}
-            className="w-full mt-4 flex items-center justify-center gap-3 rounded-xl py-6 text-base font-semibold
-                       bg-white text-gray-800 shadow-md border
-                       hover:bg-gray-100 focus:ring-2 focus:ring-offset-1 focus:ring-gray-300"
+            className="w-full mt-4 flex items-center justify-center gap-3 rounded-full py-6 text-base font-semibold
+                       bg-white text-gray-800 shadow-sm border
+                       hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
           >
             <FcGoogle className="w-7 h-7" />
             Continue with Google
           </Button>
 
-          <p className="mt-4 text-xs text-center text-gray-500">
-            🔒 We don’t store your personal data.
+          <p className="mt-4 text-xs text-center text-muted-foreground flex items-center justify-center gap-1.5">
+            <Lock className="h-3.5 w-3.5 shrink-0" />
+            We don’t store your personal data.
           </p>
         </DialogContent>
       </Dialog>

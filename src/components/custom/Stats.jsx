@@ -7,15 +7,15 @@ const STATS = [
 
 export default function Stats() {
   return (
-    <section className="max-w-4xl mx-auto px-10 py-12">
-      <div className="grid grid-cols-2 md:grid-cols-4 border border-stone-200 rounded-xl overflow-hidden divide-x divide-y md:divide-y-0 divide-stone-200">
+    <section className="max-w-4xl mx-auto px-6 md:px-10 py-12">
+      <div className="grid grid-cols-2 md:grid-cols-4 border rounded-xl overflow-hidden divide-x divide-y md:divide-y-0">
         {STATS.map(({ value, label }) => (
-          <div key={label} className="bg-stone-50 py-5 px-4 text-center">
-            <p className="font-serif text-[34px] text-stone-900 leading-none">
+          <div key={label} className="bg-card py-5 px-4 text-center">
+            <p className="font-serif text-[34px] text-primary leading-none">
               {value}
             </p>
 
-            <p className="text-xs text-stone-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               {label}
             </p>
           </div>

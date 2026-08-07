@@ -134,44 +134,62 @@ Return ONLY the JSON.
 // }
  
 export async function generateTripStream(prompt, onChunk) {
-  try {
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: [{ role: "user", content: prompt }],
-        response_format: { type: "json_object" },  // forces JSON output
-        stream: true,
-      }),
-    });
+  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      response_format: { type: "json_object" }, // forces JSON output
+      stream: true,
+    }),
+  });
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let fullText = "";
+  if (!response.ok) {
+    if (response.status === 429)
+      throw new Error("Rate limit exceeded. Wait a few seconds.");
+    throw new Error(`Failed to generate trip plan (${response.status})`);
+  }
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = ""; // leftover partial SSE line across chunks
+  let fullText = "";
 
-      const lines = decoder.decode(value).split("\n").filter(l => l.startsWith("data:"));
-      for (const line of lines) {
-        const json = line.replace("data: ", "").trim();
-        if (json === "[DONE]") continue;
-        const chunk = JSON.parse(json)?.choices?.[0]?.delta?.content || "";
-        if (chunk) {
-          fullText += chunk;
-          onChunk?.(chunk);
-        }
-      }
+  const handleLine = (line) => {
+    const data = line.trim().replace(/^data:\s*/, "");
+    if (!data || data === "[DONE]") return;
+
+    let json;
+    try {
+      json = JSON.parse(data);
+    } catch {
+      return; // ignore a fragmented line that slipped through the buffering
     }
 
-    return fullText;
-  } catch (error) {
-    if (error?.status === 429) throw new Error("Rate limit exceeded. Wait a few seconds.");
-    throw new Error("Failed to generate trip plan.");
+    const chunk = json?.choices?.[0]?.delta?.content || "";
+    if (chunk) {
+      fullText += chunk;
+      onChunk?.(chunk);
+    }
+  };
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() || ""; // hold the incomplete tail for the next chunk
+
+    for (const line of lines) handleLine(line);
   }
+
+  // flush the final partial line
+  if (buffer.trim()) handleLine(buffer);
+
+  return fullText;
 }

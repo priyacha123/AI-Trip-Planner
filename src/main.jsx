@@ -26,12 +26,12 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {/* <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme"> */}
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}>
-      <Toaster />
-      <RouterProvider router={router} />
-    </GoogleOAuthProvider>
-    {/* </ThemeProvider> */}
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}>
+        <Toaster />
+        <RouterProvider router={router} />
+      </GoogleOAuthProvider>
+    </ThemeProvider>
   </StrictMode>,
 )
 
