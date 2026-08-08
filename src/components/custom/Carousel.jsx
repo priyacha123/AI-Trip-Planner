@@ -115,7 +115,7 @@ const Carousel = forwardRef(({ children, className, activeIndex, onChange }, ref
       <button
         type="button"
         onClick={() => goTo(prevIndex)}
-        className="absolute left-2 top-1/2 z-50 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20"
+        className="absolute -left-14 top-1/2 z-50 hidden -translate-y-1/2 sm:flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20"
         aria-label="Previous"
       >
         <ChevronLeft className="h-5 w-5" />
@@ -124,7 +124,7 @@ const Carousel = forwardRef(({ children, className, activeIndex, onChange }, ref
       <button
         type="button"
         onClick={() => goTo(nextIndex)}
-        className="absolute right-2 top-1/2 z-50 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20"
+        className="absolute -right-14 top-1/2 z-50 hidden -translate-y-1/2 sm:flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20"
         aria-label="Next"
       >
         <ChevronRight className="h-5 w-5" />
