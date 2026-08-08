@@ -24,6 +24,7 @@ RULES:
 - Use realistic values
 - All geo_coordinates must contain numeric latitude and longitude
 - Ratings must be strings (example: "4.8/5", "5-Star")
+- The "plan" array in each itinerary day must contain as many places as the day can reasonably fit (aim for at least 4-5 places per day, packed with sightseeing, activities and food stops). NEVER generate a single place per day.
 
 REQUIRED JSON FORMAT:
 
@@ -60,6 +61,20 @@ REQUIRED JSON FORMAT:
         "best_time_to_visit": "STRING",
 
         "plan": [
+          {
+            "placeName": "STRING",
+            "place_details": "STRING",
+            "placeAddress": "STRING",
+            "placeImageUrl": "STRING_URL",
+            "ticket_pricing": "STRING",
+            "rating": "STRING",
+            "time_of_day": "STRING",
+            "time_required": "STRING",
+            "geo_coordinates": {
+              "latitude": NUMBER,
+              "longitude": NUMBER
+            }
+          },
           {
             "placeName": "STRING",
             "place_details": "STRING",

@@ -19,7 +19,6 @@ import {
   Sparkles,
   ArrowLeft,
   Send,
-  MessageSquare,
   Mountain,
   Palmtree,
   Landmark,
@@ -59,7 +58,6 @@ const CreateTrip = () => {
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [previewImage, setPreviewImage] = useState(FALLBACK_IMAGE);
-  const [aiInput, setAiInput] = useState("");
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
@@ -85,34 +83,6 @@ const CreateTrip = () => {
     };
     fetchPreview();
   }, [formData.location]);
-
-  const handleAiAssist = () => {
-    if (!aiInput.trim()) return;
-    const text = aiInput.toLowerCase();
-    if (text.includes("paris")) handleInputChange("location", { label: "Paris, France", value: "paris" });
-    if (text.includes("kyoto")) handleInputChange("location", { label: "Kyoto, Japan", value: "kyoto" });
-    if (text.includes("bali")) handleInputChange("location", { label: "Bali, Indonesia", value: "bali" });
-    if (text.includes("santorini")) handleInputChange("location", { label: "Santorini, Greece", value: "santorini" });
-    if (text.includes("new york")) handleInputChange("location", { label: "New York, USA", value: "new-york" });
-    if (text.match(/\d+/)) {
-      const days = parseInt(text.match(/\d+/)[0]);
-      if (days >= 1 && days <= 30) handleInputChange("total_days", days);
-    }
-    if (text.includes("budget") || text.includes("cheap") || text.includes("low")) handleInputChange("budget", "Budget Friendly");
-    if (text.includes("economy")) handleInputChange("budget", "Economy");
-    if (text.includes("standard") || text.includes("mid")) handleInputChange("budget", "Standard");
-    if (text.includes("premium") || text.includes("luxury")) handleInputChange("budget", "Premium");
-    if (text.includes("solo") || text.includes("alone")) handleInputChange("traveller", 1);
-    if (text.includes("couple") || text.includes("romantic")) handleInputChange("traveller", 2);
-    if (text.includes("family")) handleInputChange("traveller", 4);
-    if (text.includes("friends")) handleInputChange("traveller", 5);
-    if (text.includes("adventure")) handleInputChange("tripStyle", "adventure");
-    if (text.includes("relax") || text.includes("beach")) handleInputChange("tripStyle", "relaxation");
-    if (text.includes("culture") || text.includes("history")) handleInputChange("tripStyle", "culture");
-    if (text.includes("food") || text.includes("culinary")) handleInputChange("tripStyle", "food");
-    setAiInput("");
-    toast.success("Form pre-filled from your description!");
-  };
 
   const canProceed = () => {
     switch (currentStep) {
@@ -518,27 +488,6 @@ const CreateTrip = () => {
 
           {/* Right Input Rail */}
           <div className="w-full lg:w-2/5 bg-card lg:border-l border-border flex flex-col">
-            {/* AI Assist Strip */}
-            <div className="p-4 border-b border-border">
-              <div className="relative">
-                <MessageSquare className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Describe your dream trip..."
-                  value={aiInput}
-                  onChange={(e) => setAiInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleAiAssist()}
-                  className="w-full pl-10 pr-4 py-3 rounded-full bg-background border border-input text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                />
-                <button
-                  onClick={handleAiAssist}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors"
-                >
-                  <Send className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </div>
-
             {/* Step Progress */}
             <div className="px-6 pt-6 pb-2">
               <div className="flex items-center justify-between mb-4">
