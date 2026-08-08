@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Home, Map, PlusCircle, Heart, Settings, LogOut, User } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Home, Map, PlusCircle, Heart, Settings, User } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
@@ -13,7 +14,7 @@ const navItems = [
 
 const GlobalSidebar = ({ progress = 0 }) => {
   const [hovered, setHovered] = useState(false);
-  const [activePath, setActivePath] = useState("/create-trip");
+  const { pathname } = useLocation();
   const [user] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("user"));
@@ -21,6 +22,54 @@ const GlobalSidebar = ({ progress = 0 }) => {
       return null;
     }
   });
+
+  const isReal = (href) => href.startsWith("/");
+
+  const itemClass = (isActive) =>
+    cn(
+      "flex items-center gap-3 rounded-full px-3 py-3 transition-all duration-200 w-full justify-center md:justify-start",
+      "text-white/50 hover:text-white hover:bg-white/5",
+      isActive && "bg-primary/15 text-primary"
+    );
+
+  const renderItem = (item) => {
+    const isActive = pathname === item.href;
+    const inner = (
+      <>
+        <item.icon className="h-5 w-5 shrink-0" strokeWidth={1.5} />
+        {hovered && (
+          <span className="text-sm font-medium whitespace-nowrap">{item.label}</span>
+        )}
+      </>
+    );
+    return isReal(item.href) ? (
+      <Link key={item.id} to={item.href} className={itemClass(isActive)}>
+        {inner}
+      </Link>
+    ) : (
+      <button key={item.id} type="button" className={itemClass(isActive)}>
+        {inner}
+      </button>
+    );
+  };
+
+  const renderMobileItem = (item) => {
+    const isActive = pathname === item.href;
+    const cls = cn(
+      "flex flex-col items-center justify-center rounded-full p-2 transition-all duration-200 min-w-[48px]",
+      isActive ? "bg-primary/15 text-primary" : "text-white/40 hover:text-white"
+    );
+    const inner = <item.icon className="h-5 w-5" strokeWidth={1.5} />;
+    return isReal(item.href) ? (
+      <Link key={item.id} to={item.href} className={cls}>
+        {inner}
+      </Link>
+    ) : (
+      <button key={item.id} type="button" className={cls}>
+        {inner}
+      </button>
+    );
+  };
 
   return (
     <>
@@ -39,7 +88,7 @@ const GlobalSidebar = ({ progress = 0 }) => {
         }}
       >
         {/* Progress strip on inner edge */}
-        {(activePath === "/create-trip" || activePath === "/my-trips") && progress > 0 && (
+        {(pathname === "/create-trip" || pathname === "/my-trips") && progress > 0 && (
           <div className="absolute right-0 top-6 bottom-6 w-[2px] rounded-full bg-white/5 overflow-hidden">
             <div
               className="w-full bg-primary rounded-full transition-all duration-700 ease-out"
@@ -49,25 +98,7 @@ const GlobalSidebar = ({ progress = 0 }) => {
         )}
 
         <div className="flex flex-col items-center gap-1 w-full">
-          {navItems.map((item) => {
-            const isActive = activePath === item.href;
-            return (
-              <button
-                key={item.id}
-                onClick={() => setActivePath(item.href)}
-                className={cn(
-                  "flex items-center gap-3 rounded-full px-3 py-3 transition-all duration-200 w-full justify-center md:justify-start",
-                  "text-white/50 hover:text-white hover:bg-white/5",
-                  isActive && "bg-primary/15 text-primary"
-                )}
-              >
-                <item.icon className="h-5 w-5 shrink-0" strokeWidth={1.5} />
-                {hovered && (
-                  <span className="text-sm font-medium whitespace-nowrap">{item.label}</span>
-                )}
-              </button>
-            );
-          })}
+          {navItems.map(renderItem)}
         </div>
 
         {/* Avatar at bottom */}
@@ -116,23 +147,7 @@ const GlobalSidebar = ({ progress = 0 }) => {
 
       {/* Mobile bottom tab bar */}
       <nav className="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 bg-[#1a1917]/90 backdrop-blur-xl border border-white/10 rounded-full px-2 py-1.5 shadow-2xl">
-        {navItems.map((item) => {
-          const isActive = activePath === item.href;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setActivePath(item.href)}
-              className={cn(
-                "flex flex-col items-center justify-center rounded-full p-2 transition-all duration-200 min-w-[48px]",
-                isActive
-                  ? "bg-primary/15 text-primary"
-                  : "text-white/40 hover:text-white"
-              )}
-            >
-              <item.icon className="h-5 w-5" strokeWidth={1.5} />
-            </button>
-          );
-        })}
+        {navItems.map(renderMobileItem)}
       </nav>
     </>
   );

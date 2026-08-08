@@ -2,8 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "../ui/button";
-import GlobalSidebar from "../custom/GlobalSidebar";
-import Texture from "../custom/Texture";
+import Navbar from "../custom/Navbar";
+import Footer from "../custom/Footer";
+import HowItWorks from "../custom/HowItWorks";
+import Features from "../custom/Features";
+import Stats from "../custom/Stats";
+import Contact from "../custom/Contact";
 
 const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1920&q=80",
@@ -85,9 +89,18 @@ export default function Hero() {
     return () => clearInterval(interval);
   }, []);
 
+  const scrollRail = (direction) => {
+    const el = carouselRef.current;
+    if (!el) return;
+    el.scrollBy({
+      left: direction === "left" ? -300 : 300,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className="relative">
-      <GlobalSidebar />
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
@@ -144,7 +157,7 @@ export default function Hero() {
       </section>
 
       {/* Destination Rail */}
-      <section className="relative z-20 -mt-8 mx-auto max-w-7xl px-6 md:px-10 pb-12">
+      <section className="relative z-20 -mt-2 mx-auto max-w-7xl px-6 md:px-10 pb-12">
         <div className="relative">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-serif text-foreground text-2xl md:text-3xl">
@@ -152,13 +165,15 @@ export default function Hero() {
             </h2>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => carouselRef.current?.scroll("left")}
+                onClick={() => scrollRail("left")}
+                aria-label="Scroll destinations left"
                 className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-accent transition-colors"
               >
                 <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
               </button>
               <button
-                onClick={() => carouselRef.current?.scroll("right")}
+                onClick={() => scrollRail("right")}
+                aria-label="Scroll destinations right"
                 className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-accent transition-colors"
               >
                 <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
@@ -197,9 +212,6 @@ export default function Hero() {
           </div>
         </div>
       </section>
-
-      {/* Paper Texture Section Break */}
-      <Texture />
 
       {/* Popular Journeys */}
       <section className="mx-auto max-w-7xl px-6 md:px-10 py-16 md:py-24">
@@ -247,6 +259,21 @@ export default function Hero() {
           ))}
         </div>
       </section>
+
+      {/* How It Works */}
+      <HowItWorks />
+
+      {/* Features */}
+      <Features />
+
+      {/* Stats */}
+      <Stats />
+
+      {/* Contact */}
+      <Contact />
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

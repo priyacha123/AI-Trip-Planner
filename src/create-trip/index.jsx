@@ -1,7 +1,7 @@
 import LocationAutocomplete from "../components/custom/LocationAutoComplete";
 import { Button } from "../components/ui/button";
 import { SelectBudgetOptions, SelectTravelsList } from "../constants/options";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { AI_PROMPT, generateTripStream } from "../service/AiModal";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -17,7 +17,6 @@ import {
   Wallet,
   Users,
   Sparkles,
-  ArrowRight,
   ArrowLeft,
   Send,
   MessageSquare,
@@ -26,18 +25,15 @@ import {
   Landmark,
   Utensils,
   ChevronRight,
-  Image as ImageIcon,
-  Users2,
 } from "lucide-react";
-import GlobalSidebar from "../components/custom/GlobalSidebar";
 import { StatPill, StatPillRow } from "../components/custom/StatPill";
 import { getPlacePhoto } from "../service/UnsplashApi";
 
 const TRIP_STYLES = [
-  { id: "adventure", title: "Adventure", icon: Mountain, color: "from-orange-500/20 to-red-500/20" },
-  { id: "relaxation", title: "Relaxation", icon: Palmtree, color: "from-teal-500/20 to-cyan-500/20" },
-  { id: "culture", title: "Culture", icon: Landmark, color: "from-purple-500/20 to-pink-500/20" },
-  { id: "food", title: "Food", icon: Utensils, color: "from-amber-500/20 to-yellow-500/20" },
+  { id: "adventure", title: "Adventure", icon: Mountain, tint: "bg-orange-500/10 text-orange-600 dark:text-orange-400" },
+  { id: "relaxation", title: "Relaxation", icon: Palmtree, tint: "bg-teal-500/10 text-teal-600 dark:text-teal-400" },
+  { id: "culture", title: "Culture", icon: Landmark, tint: "bg-violet-500/10 text-violet-600 dark:text-violet-400" },
+  { id: "food", title: "Food", icon: Utensils, tint: "bg-amber-500/10 text-amber-600 dark:text-amber-400" },
 ];
 
 const STEPS = [
@@ -88,11 +84,6 @@ const CreateTrip = () => {
     };
     fetchPreview();
   }, [formData.location]);
-
-  const completedSteps = useMemo(() => {
-    const count = [formData.location, formData.total_days, formData.budget, formData.traveller, formData.tripStyle].filter(Boolean).length;
-    return count;
-  }, [formData]);
 
   const handleAiAssist = () => {
     if (!aiInput.trim()) return;
@@ -206,6 +197,13 @@ const CreateTrip = () => {
       });
   };
 
+  const selectionCardClass = (selected) =>
+    `flex flex-col items-start gap-2.5 p-4 rounded-2xl text-left transition-all ${
+      selected
+        ? "bg-primary/10 border-2 border-primary ring-1 ring-primary/40"
+        : "bg-card border border-muted hover:border-primary/40"
+    }`;
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
@@ -233,7 +231,7 @@ const CreateTrip = () => {
               <input
                 type="number"
                 placeholder="Eg. 5"
-                className="w-full p-5 rounded-2xl text-foreground border-2 border-input bg-background placeholder-muted-foreground outline-none focus:border-primary transition-colors text-lg"
+                className="w-full p-5 rounded-2xl text-foreground border-2 border-input bg-background placeholder-muted-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-lg"
                 value={formData.total_days || ""}
                 onChange={(e) =>
                   handleInputChange("total_days", e.target.value === "" ? "" : Number(e.target.value))
@@ -241,9 +239,9 @@ const CreateTrip = () => {
                 min="1"
                 max="30"
               />
-              <CalendarDays className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <CalendarDays className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             </div>
-            <div className="flex gap-2 mt-4">
+            <div className="flex gap-2 mt-4 flex-wrap">
               {[3, 5, 7, 10, 14].map((d) => (
                 <button
                   key={d}
@@ -265,21 +263,31 @@ const CreateTrip = () => {
           <div className="space-y-4">
             <h3 className="font-serif text-2xl text-foreground mb-1">Your budget?</h3>
             <p className="text-sm text-muted-foreground mb-6">Pick a comfort level</p>
-            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 -mx-1 px-1">
-              {SelectBudgetOptions.map((item) => (
-                <button
-                  key={item.title}
-                  onClick={() => handleInputChange("budget", item.title)}
-                  className={`flex-shrink-0 flex flex-col items-center gap-2 p-4 rounded-2xl transition-all min-w-[100px] ${
-                    formData.budget === item.title
-                      ? "bg-primary/10 border-2 border-primary ring-1 ring-primary"
-                      : "bg-card border border-muted hover:border-primary/40"
-                  }`}
-                >
-                  <item.icon className="h-6 w-6 text-primary" />
-                  <span className="text-xs font-medium text-foreground whitespace-nowrap">{item.title}</span>
-                </button>
-              ))}
+            <div className="grid grid-cols-2 gap-3">
+              {SelectBudgetOptions.map((item) => {
+                const selected = formData.budget === item.title;
+                return (
+                  <button
+                    key={item.title}
+                    onClick={() => handleInputChange("budget", item.title)}
+                    className={selectionCardClass(selected)}
+                  >
+                    <span
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                        selected
+                          ? "bg-primary/15 text-primary"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      <item.icon className="h-5 w-5" />
+                    </span>
+                    <span className="text-sm font-medium text-foreground">{item.title}</span>
+                    <span className="text-[11px] leading-snug text-muted-foreground">
+                      {item.description}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         );
@@ -288,21 +296,31 @@ const CreateTrip = () => {
           <div className="space-y-4">
             <h3 className="font-serif text-2xl text-foreground mb-1">Who&apos;s coming?</h3>
             <p className="text-sm text-muted-foreground mb-6">Number of travelers</p>
-            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 -mx-1 px-1">
-              {SelectTravelsList.map((item) => (
-                <button
-                  key={item.title}
-                  onClick={() => handleInputChange("traveller", item.people)}
-                  className={`flex-shrink-0 flex flex-col items-center gap-2 p-4 rounded-2xl transition-all min-w-[100px] ${
-                    formData.traveller === item.people
-                      ? "bg-primary/10 border-2 border-primary ring-1 ring-primary"
-                      : "bg-card border border-muted hover:border-primary/40"
-                  }`}
-                >
-                  <item.icon className="h-6 w-6 text-primary" />
-                  <span className="text-xs font-medium text-foreground whitespace-nowrap">{item.title}</span>
-                </button>
-              ))}
+            <div className="grid grid-cols-2 gap-3">
+              {SelectTravelsList.map((item) => {
+                const selected = formData.traveller === item.people;
+                return (
+                  <button
+                    key={item.title}
+                    onClick={() => handleInputChange("traveller", item.people)}
+                    className={selectionCardClass(selected)}
+                  >
+                    <span
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                        selected
+                          ? "bg-primary/15 text-primary"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      <item.icon className="h-5 w-5" />
+                    </span>
+                    <span className="text-sm font-medium text-foreground">{item.title}</span>
+                    <span className="text-[11px] leading-snug text-muted-foreground">
+                      {item.description}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         );
@@ -311,21 +329,26 @@ const CreateTrip = () => {
           <div className="space-y-4">
             <h3 className="font-serif text-2xl text-foreground mb-1">Trip style?</h3>
             <p className="text-sm text-muted-foreground mb-6">What kind of experience do you want?</p>
-            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 -mx-1 px-1">
-              {TRIP_STYLES.map((style) => (
-                <button
-                  key={style.id}
-                  onClick={() => handleInputChange("tripStyle", style.id)}
-                  className={`flex-shrink-0 flex flex-col items-center gap-2 p-5 rounded-2xl transition-all min-w-[110px] bg-gradient-to-b ${style.color} ${
-                    formData.tripStyle === style.id
-                      ? "border-2 border-primary ring-1 ring-primary"
-                      : "border border-white/10 hover:border-primary/40"
-                  }`}
-                >
-                  <style.icon className="h-7 w-7 text-foreground/80" />
-                  <span className="text-xs font-medium text-foreground whitespace-nowrap">{style.title}</span>
-                </button>
-              ))}
+            <div className="grid grid-cols-2 gap-3">
+              {TRIP_STYLES.map((style) => {
+                const selected = formData.tripStyle === style.id;
+                return (
+                  <button
+                    key={style.id}
+                    onClick={() => handleInputChange("tripStyle", style.id)}
+                    className={`flex flex-col items-start gap-3 p-5 rounded-2xl text-left transition-all ${
+                      selected
+                        ? "bg-primary/5 border-2 border-primary ring-1 ring-primary/40"
+                        : "bg-card border border-muted hover:border-primary/40"
+                    }`}
+                  >
+                    <span className={`w-12 h-12 rounded-xl flex items-center justify-center ${style.tint}`}>
+                      <style.icon className="h-6 w-6" />
+                    </span>
+                    <span className="text-sm font-medium text-foreground">{style.title}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         );
@@ -334,7 +357,7 @@ const CreateTrip = () => {
           <div className="space-y-6">
             <h3 className="font-serif text-2xl text-foreground mb-1">Review your trip</h3>
             <p className="text-sm text-muted-foreground mb-4">Confirm details before generating</p>
-            <div className="bg-card border rounded-2xl p-5 space-y-4">
+            <div className="bg-card border border-border rounded-2xl p-5 space-y-4">
               <div className="flex items-center gap-3">
                 <MapPin className="h-5 w-5 text-primary" />
                 <div>
@@ -365,9 +388,9 @@ const CreateTrip = () => {
               </div>
             </div>
             <StatPillRow>
-              {formData.total_days && <StatPill icon={CalendarDays} label="Duration" value={`${formData.total_days}d`} />}
-              {formData.budget && <StatPill icon={Wallet} label="Budget" value={formData.budget} />}
-              {formData.traveller && <StatPill icon={Users} label="Travelers" value={formData.traveller} />}
+              {formData.total_days && <StatPill variant="light" icon={CalendarDays} label="Duration" value={`${formData.total_days}d`} />}
+              {formData.budget && <StatPill variant="light" icon={Wallet} label="Budget" value={formData.budget} />}
+              {formData.traveller && <StatPill variant="light" icon={Users} label="Travelers" value={formData.traveller} />}
             </StatPillRow>
           </div>
         );
@@ -376,12 +399,42 @@ const CreateTrip = () => {
     }
   };
 
+  const selectedChip = (text) => (
+    <span className="text-[11px] font-medium text-white bg-white/15 border border-white/20 rounded-full px-2.5 py-1">
+      {text}
+    </span>
+  );
+
   return (
     <>
-      <GlobalSidebar progress={completedSteps / STEPS.length} currentStep={currentStep} totalSteps={STEPS.length} />
-
       <div className="min-h-screen bg-background transition-colors">
-        <div className="flex flex-col lg:flex-row min-h-[calc(100vh-60px)]">
+        <div className="flex flex-col lg:flex-row min-h-screen">
+          {/* Mobile preview band */}
+          <div className="relative h-44 lg:hidden overflow-hidden bg-neutral-900 flex-shrink-0">
+            <img
+              src={previewImage}
+              alt="Trip preview"
+              className="absolute inset-0 w-full h-full object-cover opacity-60"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="relative z-10 flex flex-col justify-end h-full p-4">
+              {formData.location ? (
+                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-3 py-1.5 self-start">
+                  <MapPin className="h-3.5 w-3.5 text-white" />
+                  <span className="text-white text-sm font-medium">{formData.location.label}</span>
+                </div>
+              ) : (
+                <span className="text-white/50 text-sm">Fill the form to preview your trip</span>
+              )}
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {formData.total_days && selectedChip(`${formData.total_days}d`)}
+                {formData.budget && selectedChip(formData.budget)}
+                {formData.traveller && selectedChip(`${formData.traveller} people`)}
+                {formData.tripStyle && selectedChip(formData.tripStyle)}
+              </div>
+            </div>
+          </div>
+
           {/* Left Preview Panel */}
           <div className="hidden lg:flex lg:w-3/5 relative overflow-hidden bg-neutral-900">
             <img
@@ -428,6 +481,18 @@ const CreateTrip = () => {
                   </div>
                 )}
 
+                {formData.budget && (
+                  <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 max-w-xs">
+                    <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center">
+                      <Wallet className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-white/60 text-xs uppercase tracking-wider">Budget</p>
+                      <p className="text-white font-medium">{formData.budget}</p>
+                    </div>
+                  </div>
+                )}
+
                 {formData.tripStyle && (
                   <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 max-w-xs">
                     <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center">
@@ -451,7 +516,7 @@ const CreateTrip = () => {
           </div>
 
           {/* Right Input Rail */}
-          <div className="w-full lg:w-2/5 bg-card border-l border-border flex flex-col">
+          <div className="w-full lg:w-2/5 bg-card lg:border-l border-border flex flex-col">
             {/* AI Assist Strip */}
             <div className="p-4 border-b border-border">
               <div className="relative">
@@ -462,7 +527,7 @@ const CreateTrip = () => {
                   value={aiInput}
                   onChange={(e) => setAiInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleAiAssist()}
-                  className="w-full pl-10 pr-4 py-3 rounded-full bg-background border border-input text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary transition-colors"
+                  className="w-full pl-10 pr-4 py-3 rounded-full bg-background border border-input text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 />
                 <button
                   onClick={handleAiAssist}
@@ -480,9 +545,10 @@ const CreateTrip = () => {
                   <div key={step.id} className="flex items-center gap-2">
                     <button
                       onClick={() => setCurrentStep(index)}
+                      aria-label={step.label}
                       className={`flex items-center justify-center w-8 h-8 rounded-full transition-all ${
                         currentStep === index
-                          ? "bg-primary text-primary-foreground"
+                          ? "bg-primary text-primary-foreground ring-2 ring-primary/30"
                           : index < currentStep
                           ? "bg-primary/20 text-primary"
                           : "bg-muted text-muted-foreground"
@@ -533,7 +599,7 @@ const CreateTrip = () => {
                 <Button
                   disabled={loading}
                   onClick={OnGenerateTrip}
-                  className="ml-auto rounded-full px-6 py-2.5 text-sm font-semibold bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
+                  className="ml-auto rounded-full px-8 py-3 text-sm font-semibold bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90"
                 >
                   {loading ? (
                     <AiOutlineLoading3Quarters className="animate-spin text-xl" />
