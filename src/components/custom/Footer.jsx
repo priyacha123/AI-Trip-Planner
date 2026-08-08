@@ -33,8 +33,8 @@ function LogoMark({ className = "" }) {
 
 export default function Footer() {
   return (
-    <footer className="border-t border px-6 md:px-10 py-14 md:py-16">
-      <div className="max-w-4xl mx-auto">
+    <footer className="border-t border-border px-6 md:px-10 py-14 md:py-16">
+      <div className="w-[80%] mx-auto">
         {/* Top row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
           {/* Brand col */}
@@ -102,7 +102,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom row */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-border">
           <span className="text-sm text-muted-foreground">
             © 2026 JOURNI
           </span>

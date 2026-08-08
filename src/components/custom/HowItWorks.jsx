@@ -38,11 +38,6 @@ export default function HowItWorks() {
           <br />
           <i className="text-muted-foreground">one itinerary.</i>
         </h2>
-
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          No accounts needed to try it. Enter a destination and JOURNI handles
-          the rest.
-        </p>
       </div>
 
       {/* Steps grid */}
