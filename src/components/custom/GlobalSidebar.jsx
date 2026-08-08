@@ -8,12 +8,13 @@ const navItems = [
   { id: "home", icon: Home, label: "Home", href: "/" },
   { id: "my-trips", icon: Map, label: "My Trips", href: "/my-trips" },
   { id: "create-trip", icon: PlusCircle, label: "Create Trip", href: "/create-trip" },
-  { id: "saved", icon: Heart, label: "Saved", href: "#" },
-  { id: "settings", icon: Settings, label: "Settings", href: "#" },
+  { id: "saved", icon: Heart, label: "Saved", href: "/saved" },
+  { id: "settings", icon: Settings, label: "Settings", href: "/settings" },
 ];
 
 const GlobalSidebar = ({ progress = 0 }) => {
   const [hovered, setHovered] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const { pathname } = useLocation();
   const [user] = useState(() => {
     try {
@@ -24,6 +25,18 @@ const GlobalSidebar = ({ progress = 0 }) => {
   });
 
   const isReal = (href) => href.startsWith("/");
+
+  const handleNavClick = (e, item) => {
+    if (item.id === "home" && pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    window.location.reload();
+  };
 
   const itemClass = (isActive) =>
     cn(
@@ -43,7 +56,12 @@ const GlobalSidebar = ({ progress = 0 }) => {
       </>
     );
     return isReal(item.href) ? (
-      <Link key={item.id} to={item.href} className={itemClass(isActive)}>
+      <Link
+        key={item.id}
+        to={item.href}
+        onClick={(e) => handleNavClick(e, item)}
+        className={itemClass(isActive)}
+      >
         {inner}
       </Link>
     ) : (
@@ -61,7 +79,12 @@ const GlobalSidebar = ({ progress = 0 }) => {
     );
     const inner = <item.icon className="h-5 w-5" strokeWidth={1.5} />;
     return isReal(item.href) ? (
-      <Link key={item.id} to={item.href} className={cls}>
+      <Link
+        key={item.id}
+        to={item.href}
+        onClick={(e) => handleNavClick(e, item)}
+        className={cls}
+      >
         {inner}
       </Link>
     ) : (
@@ -104,41 +127,40 @@ const GlobalSidebar = ({ progress = 0 }) => {
         {/* Avatar at bottom */}
         <div className="mt-auto pt-2 w-full flex justify-center">
           {user ? (
-            <Popover>
+            <Popover open={avatarOpen} onOpenChange={setAvatarOpen}>
               <PopoverTrigger asChild>
                 <button className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-white/10 hover:ring-primary/50 transition-all">
                   <img src={user.picture} alt="avatar" className="h-full w-full object-cover" />
                 </button>
               </PopoverTrigger>
-              <PopoverContent side="right" align="center" className="w-48 text-sm">
-                <div className="px-1 pb-2 mb-1 border-b border-white/10 text-white/70 truncate">
+              <PopoverContent side="right" align="center" className="w-56 p-2 text-sm">
+                <div className="px-2 pb-2 mb-1 border-b border-border text-muted-foreground truncate">
                   {user.email}
                 </div>
-                <a href="/my-trips" className="block px-1 py-1.5 rounded-md hover:bg-white/5 text-white cursor-pointer">
-                  My trips
-                </a>
                 <button
-                  onClick={() => {
-                    localStorage.removeItem("user");
-                    window.location.reload();
-                  }}
-                  className="w-full text-left px-1 py-1.5 rounded-md hover:bg-white/5 text-white cursor-pointer"
+                  type="button"
+                  onClick={handleLogout}
+                  className="w-full text-left px-2 py-1.5 rounded-md text-destructive hover:bg-muted cursor-pointer transition-colors"
                 >
                   Logout
                 </button>
               </PopoverContent>
             </Popover>
           ) : (
-            <Popover>
+            <Popover open={avatarOpen} onOpenChange={setAvatarOpen}>
               <PopoverTrigger asChild>
                 <button className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/15 transition-all">
                   <User className="h-4 w-4" />
                 </button>
               </PopoverTrigger>
-              <PopoverContent side="right" align="center" className="w-48 text-sm">
-                <a href="/" className="block px-1 py-1.5 rounded-md hover:bg-white/5 text-white cursor-pointer">
+              <PopoverContent side="right" align="center" className="w-48 p-2 text-sm">
+                <Link
+                  to="/"
+                  onClick={() => setAvatarOpen(false)}
+                  className="block px-2 py-1.5 rounded-md text-foreground hover:bg-muted cursor-pointer transition-colors"
+                >
                   Sign in
-                </a>
+                </Link>
               </PopoverContent>
             </Popover>
           )}

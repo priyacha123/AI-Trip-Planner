@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Check } from "lucide-react";
 
 export default function Contact() {
   const [email, setEmail] = useState("");
@@ -11,20 +12,20 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="max-w-4xl mx-auto px-6 md:px-10 pb-16">
-      <div className="border rounded-xl bg-muted p-10 md:p-12">
+    <section id="contact" className="max-w-4xl mx-auto px-6 md:px-10 py-16 md:py-24">
+      <div className="rounded-2xl border border-border bg-card shadow-sm p-10 md:p-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           {/* Left */}
           <div>
-            <p className="text-[11px] font-medium text-muted-foreground tracking-[0.08em] uppercase mb-3">
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary mb-3">
               Get started
             </p>
-            <h2 className="font-serif text-[28px] font-normal text-foreground leading-[1.25] mb-2">
+            <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-4">
               Start your first trip
               <br />
               <i className="text-muted-foreground">for free.</i>
             </h2>
-            <p className="text-[13.5px] font-light text-muted-foreground">
+            <p className="text-base text-muted-foreground leading-relaxed">
               No credit card. 5 trips per month on the free plan.
             </p>
           </div>
@@ -32,15 +33,9 @@ export default function Contact() {
           {/* Right — form */}
           <div>
             {submitted ? (
-              <div className="flex items-center gap-2.5 text-[14px] text-foreground">
-                <span className="w-6 h-6 flex items-center justify-center rounded-full bg-primary/10 border border-primary/30">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="w-3.5 h-3.5 stroke-primary fill-none"
-                    strokeWidth={2.2}
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
+              <div className="flex items-center gap-2.5 text-sm text-foreground">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 border border-primary/30 text-primary">
+                  <Check className="h-3.5 w-3.5" strokeWidth={2.2} />
                 </span>
                 You're on the list — check your inbox.
               </div>
@@ -59,7 +54,7 @@ export default function Contact() {
                 />
                 <button
                   type="submit"
-                  className="text-sm font-medium text-primary-foreground bg-primary px-5 py-[10px] rounded-full hover:bg-primary/90 transition-colors duration-150 whitespace-nowrap cursor-pointer border-none"
+                  className="text-sm font-medium text-white bg-primary px-5 py-[10px] rounded-full hover:bg-primary/90 transition-colors duration-150 whitespace-nowrap cursor-pointer border-none"
                 >
                   Get started
                 </button>
@@ -68,7 +63,7 @@ export default function Contact() {
 
             {/* Trust line */}
             {!submitted && (
-              <p className="text-[12px] text-muted-foreground mt-2.5">
+              <p className="text-xs text-muted-foreground mt-3">
                 By signing up you agree to our{" "}
                 <a
                   href="#"

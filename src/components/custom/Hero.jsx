@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, ChevronLeft, ChevronRight, Star, StarHalf } from "lucide-react";
 import { Button } from "../ui/button";
 import Navbar from "../custom/Navbar";
 import Footer from "../custom/Footer";
@@ -48,27 +48,66 @@ const DESTINATIONS = [
   },
 ];
 
-const POPULAR_JOURNEYS = [
+const TESTIMONIALS = [
   {
     id: 1,
-    title: "Alpine Escape",
-    subtitle: "Swiss Alps • 5 days • 2 travelers",
-    image: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800&q=80",
-    side: "left",
+    name: "Daniel Reyes",
+    role: "Backpacker, Berlin",
+    rating: 5,
+    quote:
+      "JOURNI turned our vague 'somewhere in Japan' idea into a day-by-day plan we actually followed. The pacing was spot on.",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&h=160&fit=crop&crop=faces&q=80",
   },
   {
     id: 2,
-    title: "Coastal Drives",
-    subtitle: "Amalfi Coast • 4 days • 2 travelers",
-    image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80",
-    side: "right",
+    name: "Sofia Marchetti",
+    role: "Product Designer, Milan",
+    rating: 4,
+    quote:
+      "I planned a week in Lisbon in one sitting. Every restaurant it recommended was a hit with my friends.",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=160&h=160&fit=crop&crop=faces&q=80",
   },
   {
     id: 3,
-    title: "Northern Lights",
-    subtitle: "Tromsø • 6 days • 1 traveler",
-    image: "https://images.unsplash.com/photo-1483347756197-71ef80e95f73?w=800&q=80",
-    side: "left",
+    name: "Liam O'Connor",
+    role: "Photographer, Dublin",
+    rating: 4.5,
+    quote:
+      "The itinerary balanced sightseeing and slow mornings perfectly. It felt like a local friend had planned it for me.",
+    avatar:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&crop=faces&q=80",
+  },
+  {
+    id: 4,
+    name: "Amara Okafor",
+    role: "Grad Student, London",
+    rating: 3,
+    quote:
+      "I was nervous about a solo trip to Morocco, but the plan made me feel prepared. I never felt lost once.",
+    avatar:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&h=160&fit=crop&crop=faces&q=80",
+  },
+  {
+    id: 5,
+    name: "Marcus Chen",
+    role: "Software Engineer, Toronto",
+    rating: 5,
+    quote:
+      "We changed our dates three times and JOURNI rebuilt the whole plan in seconds each time. Huge time-saver.",
+    avatar:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=160&h=160&fit=crop&crop=faces&q=80",
+  },
+  {
+    id: 6,
+    name: "Elena Novak",
+    role: "Teacher, Vienna",
+    rating: 4.5,
+    quote:
+      "Our family trip to Italy went flawlessly. The daily suggestions meant zero planning stress for me.",
+    avatar:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=160&h=160&fit=crop&crop=faces&q=80",
   },
 ];
 
@@ -157,7 +196,7 @@ export default function Hero() {
       </section>
 
       {/* Destination Rail */}
-      <section className="relative z-20 -mt-2 mx-auto max-w-7xl px-6 md:px-10 pb-12">
+      <section className="relative z-20 mt-8 mx-auto max-w-7xl px-6 md:px-10 pb-12">
         <div className="relative">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-serif text-foreground text-2xl md:text-3xl">
@@ -213,49 +252,77 @@ export default function Hero() {
         </div>
       </section>
 
-      {/* Popular Journeys */}
+      {/* Traveler Feedback */}
       <section className="mx-auto max-w-7xl px-6 md:px-10 py-16 md:py-24">
         <div className="mb-12 md:mb-16">
           <h2 className="font-serif text-foreground text-3xl md:text-4xl lg:text-5xl mb-4">
-            Popular Journeys
+            Loved by travelers
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl">
-            Curated itineraries crafted by AI, refined by travelers who've been
-            there.
+            Real feedback from people who planned their trips with JOURNI.
           </p>
         </div>
 
-        <div className="flex flex-col gap-8 md:gap-12">
-          {POPULAR_JOURNEYS.map((journey) => (
-            <div
-              key={journey.id}
-              className={`flex flex-col md:flex-row gap-6 md:gap-10 items-center border border-border rounded-2xl p-4 md:p-6 ${
-                journey.side === "right" ? "md:flex-row-reverse" : ""
-              }`}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {TESTIMONIALS.map((testimonial) => (
+            <figure
+              key={testimonial.id}
+              className="flex flex-col rounded-2xl border border-border bg-card p-6 shadow-sm"
             >
-              <div className="w-full md:w-1/2 aspect-video rounded-xl overflow-hidden">
-                <img
-                  src={journey.image}
-                  alt={journey.title}
-                  className="w-full h-full object-cover"
-                />
+              <div
+                className="flex items-center gap-1 mb-4"
+                aria-label={`Rated ${testimonial.rating} out of 5 stars`}
+              >
+                {[...Array(5)].map((_, i) => {
+                  const position = i + 1;
+                  if (testimonial.rating >= position) {
+                    return (
+                      <Star
+                        key={i}
+                        className="h-4 w-4 text-primary fill-current"
+                        strokeWidth={1.5}
+                      />
+                    );
+                  }
+                  if (testimonial.rating >= position - 0.5) {
+                    return (
+                      <StarHalf
+                        key={i}
+                        className="h-4 w-4 text-primary fill-current"
+                        strokeWidth={1.5}
+                      />
+                    );
+                  }
+                  return (
+                    <Star
+                      key={i}
+                      className="h-4 w-4 text-muted-foreground"
+                      strokeWidth={1.5}
+                    />
+                  );
+                })}
               </div>
 
-              <div className="w-full md:w-1/2 flex flex-col justify-center">
-                <h3 className="font-serif text-foreground text-2xl md:text-3xl mb-3">
-                  {journey.title}
-                </h3>
-                <p className="text-muted-foreground mb-6">{journey.subtitle}</p>
-                <Link to="/create-trip" className="no-underline self-start">
-                  <Button
-                    variant="outline"
-                    className="rounded-full px-6 py-2.5 text-sm font-medium"
-                  >
-                    View Details
-                  </Button>
-                </Link>
-              </div>
-            </div>
+              <blockquote className="text-foreground flex-1">
+                <p>{testimonial.quote}</p>
+              </blockquote>
+
+              <figcaption className="mt-6 flex items-center gap-3">
+                <img
+                  src={testimonial.avatar}
+                  alt={testimonial.name}
+                  className="h-10 w-10 rounded-full object-cover"
+                />
+                <div>
+                  <p className="font-medium text-foreground">
+                    {testimonial.name}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {testimonial.role}
+                  </p>
+                </div>
+              </figcaption>
+            </figure>
           ))}
         </div>
       </section>

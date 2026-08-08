@@ -43,7 +43,7 @@ const SignInDialog= ( { openDialog, setOpenDialog } ) => {
           <DialogHeader className="space-y-3 text-center">
             <DialogTitle className="text-xl font-bold text-foreground">
               Welcome to{" "}
-              <span className="text-primary">Voyara</span>
+              <span className="text-primary">JOURNI</span>
             </DialogTitle>
 
             <DialogDescription className="text-sm text-muted-foreground">

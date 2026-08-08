@@ -8,6 +8,8 @@ import { Toaster } from './components/ui/sonner.jsx'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import Viewtrip from './view-trip/[tripId]/index.jsx'
 import MyTrips from './my-trips/index.jsx'
+import Saved from './saved/index.jsx'
+import Settings from './settings/index.jsx'
 import Hero from './components/custom/Hero.jsx'
 import { ThemeProvider } from './components/ui/theme-provider.js'
 
@@ -20,6 +22,8 @@ const router = createBrowserRouter([
       { path: "create-trip", element: <CreateTrip /> },
       { path: "my-trips", element: <MyTrips /> },
       { path: "view-trip/:tripId", element: <Viewtrip /> },
+      { path: "saved", element: <Saved /> },
+      { path: "settings", element: <Settings /> },
     ],
   },
 ])

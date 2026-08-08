@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { StatPill, StatPillRow } from "../components/custom/StatPill";
 import { getPlacePhoto } from "../service/UnsplashApi";
+import { FALLBACK_IMAGE } from "../constants/images";
 
 const TRIP_STYLES = [
   { id: "adventure", title: "Adventure", icon: Mountain, tint: "bg-orange-500/10 text-orange-600 dark:text-orange-400" },
@@ -57,7 +58,7 @@ const CreateTrip = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [previewImage, setPreviewImage] = useState("/home-trip.webp");
+  const [previewImage, setPreviewImage] = useState(FALLBACK_IMAGE);
   const [aiInput, setAiInput] = useState("");
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");

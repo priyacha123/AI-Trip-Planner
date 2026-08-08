@@ -30,7 +30,7 @@ export default function Navbar() {
             </svg>
           </div>
           <span className="text-[15px] font-medium text-foreground tracking-tight">
-            Voyara
+            JOURNI
           </span>
         </a>
 
@@ -80,12 +80,6 @@ export default function Navbar() {
                   <div className="px-1 pb-2 mb-1 border-b border text-muted-foreground truncate">
                     {user.email}
                   </div>
-
-                  <Link to="/my-trips">
-                    <div className="px-1 py-1.5 rounded-md hover:bg-muted text-foreground cursor-pointer">
-                      My trips
-                    </div>
-                  </Link>
 
                   <button
                     onClick={() => {

@@ -1,6 +1,10 @@
 import { useState, useCallback, useEffect, forwardRef, useImperativeHandle } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+// Only render the active card and a few neighbours; farther cards become
+// empty (invisible) placeholders so a long list doesn't pile up ghost cards.
+const MAX_RENDER_OFFSET = 2;
+
 const Carousel = forwardRef(({ children, className, activeIndex, onChange }, ref) => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -61,7 +65,7 @@ const Carousel = forwardRef(({ children, className, activeIndex, onChange }, ref
 
   return (
     <div
-      className={`relative select-none ${className || ""}`}
+      className={`relative h-full select-none ${className || ""}`}
       onMouseDown={(e) => handleStart(e.clientX)}
       onMouseMove={(e) => handleMove(e.clientX)}
       onMouseUp={handleEnd}
@@ -75,9 +79,10 @@ const Carousel = forwardRef(({ children, className, activeIndex, onChange }, ref
           const offset = index - currentIndex;
           const absOffset = Math.abs(offset);
           const isActive = offset === 0;
+          const isFar = absOffset > MAX_RENDER_OFFSET;
 
           let scale = 1 - absOffset * 0.12;
-          let translateX = offset * 55;
+          let translateX = offset * 68;
           let translateZ = isActive ? 0 : -120;
           let rotateY = offset * -4;
           let opacity = 1 - absOffset * 0.35;
@@ -95,13 +100,13 @@ const Carousel = forwardRef(({ children, className, activeIndex, onChange }, ref
               className="absolute inset-x-0 top-0 mx-auto h-full w-full transition-all duration-500 ease-out"
               style={{
                 transform: `translateX(${translateX}%) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
-                opacity: Math.max(opacity, 0.15),
-                filter: `blur(${blur}px)`,
+                opacity: isFar ? 0 : Math.max(opacity, 0.15),
+                filter: isFar ? "none" : `blur(${blur}px)`,
                 zIndex,
                 pointerEvents,
               }}
             >
-              {child}
+              {isFar ? null : child}
             </div>
           );
         })}
